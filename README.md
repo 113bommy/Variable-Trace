@@ -25,7 +25,7 @@ g++-7 <cpp_filename> -o <compile_filename> -ggdb -O0
 ```bash
 gdb <compile_filename>
 (gdb) source trace.py
-(gdb) trace <symbol_file> <cpp_filename> <save_filename>
+(gdb) trace <symbol_file> <cpp_filename> <save_filename> <input_filename>
 ```
 
 ### **Demo Usage**
@@ -33,11 +33,10 @@ gdb <compile_filename>
 g++-7 cpp_correct_test_0_0.cpp -o test -ggdb -O0
 gdb test
 (gdb) source trace.py
-(gdb) trace user_def.txt cpp_correct_test_0_0.cpp test_save
+(gdb) trace user_def.txt cpp_correct_test_0_0.cpp test_save input.txt
 ```
 #### Symbol_file contains the variable name that we have to trace.
 #### After this command traced file test_save.json will be saved on base directory
 
-#### Till now, We have to give the input manually.
 #### Input of the cpp file is saved on './cpp_data' directory zip files.
 

@@ -37,7 +37,6 @@ class StepAndTrace(gdb.Command):
             try:
                 if self.is_user_frame():
                     self.trace_all_variables()
-                gdb.execute("step")
             except gdb.error as e:
                 print(f"Error during step handling: {e}")
 
@@ -90,6 +89,7 @@ class StepAndTrace(gdb.Command):
                                 print('\n==================END=================')
                                 # Store variable data
                                 line_data['variables'][symbol.name] = str(value)
+                                print('data stored')
                         except gdb.error as e:
                             print(f"Error accessing value for {symbol.name}: {e}")
                 block = block.superblock
@@ -102,28 +102,35 @@ class StepAndTrace(gdb.Command):
         """Save the collected execution data to a JSON file."""
         with open(f'{self.json_name}.json', "w") as outfile:
             json.dump(self.execution_data, outfile, indent=4)
-        print("Execution data saved to execution_data.json")
 
     def invoke(self, arg, from_tty):
         """Invoke the trace command with the given arguments."""
         args = gdb.string_to_argv(arg)
-        if len(args) != 3:
-            print("Usage: trace <symbol_file> <cpp_filename> <save_filename>")
+        if len(args) != 4:
+            print("Usage: trace <symbol_file> <cpp_filename> <save_filename> <input_filename>")
             return
         
         filepath = args[0]
         cpp_name = args[1]
         json_name = args[2]
+        input_filename = args[3]
+
         self.load_user_defined_symbols(filepath)
         self.load_cpp_filename(cpp_name)
         self.set_json_name(json_name)
 
         self.stepping = True
+
         try:
-            gdb.execute("start")
-            gdb.execute("step")
-            self.save_execution_data()  # Save data after execution
+            gdb.execute(f'break main')
+            gdb.execute(f"run < {input_filename}")
+            while True:
+                gdb.execute("step")
         except gdb.error as e:
             print(f"Error starting program: {e}")
+            return
+        finally:
+            self.save_execution_data()
+
 
 StepAndTrace()
