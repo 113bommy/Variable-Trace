@@ -38,5 +38,5 @@ gdb test
 #### Symbol_file contains the variable name that we have to trace.
 #### After this command traced file test_save.json will be saved on base directory
 
-#### Input of the cpp file is saved on './cpp_data' directory zip files.
+#### Input of the cpp file is saved on './cpp_input' directory.
 
